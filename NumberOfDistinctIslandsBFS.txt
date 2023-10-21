@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+void BFS(int row, int col, vector<vector<int>> &grid, vector<vector<int>> &visited, vector<pair<int, int>> &distinct) {
+    int m = grid.size();
+    int n = grid[0].size();
+    queue<pair<int, int>> q;
+    q.push({row, col});
+    grid[row][col] = 5;
+    visited[row][col] = 1;
+    int delrow[] = {-1, 0, 1, 0};
+    int delcol[] = {0, 1, -1, 0};
+    while(!q.empty()) {
+        int front_row = q.front().first;
+        int front_col = q.front().second;
+        q.pop();
+        for(int i = 0; i < 4; i++) {
+            int newRow = front_row + delrow[i];
+            int newCol = front_col + delcol[i];
+            if(newRow >= 0 && newRow < m && newCol >= 0 && newCol < n && grid[newRow][newCol] == 1 && !visited[newRow][newCol]) {
+                q.push({newRow, newCol});
+                visited[newRow][newCol] = 1;
+                grid[newRow][newCol] = 5;
+                distinct.push_back({newRow - front_row, newCol - front_col});
+            }
+        }
+    }
+}
+
+int main() {
+    
+    int m, n;
+    
+    cout<<"Enter number of rows :- ";
+    cin>>m;
+    cout<<"Enter number of columns :- ";
+    cin>>n;
+    
+    vector<vector<int>> island(m, vector<int>(n));
+    vector<vector<int>> visited(m, vector<int>(n, 0));
+    
+    for(int i = 0; i < m; i++) {
+        cout<<"Enter "<<i + 1<<" row :- ";
+        for(int j = 0; j < n; j++) {
+            cin>>island[i][j];
+        }
+        cout<<endl;
+    }
+    cout<<"2 D land is : "<<endl;
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            cout<<island[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    
+    set<vector<pair<int, int>>> st;
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            if(island[i][j] == 1 && !visited[i][j]) {
+                vector<pair<int, int>> distinct;
+                BFS(i, j, island, visited, distinct);
+                st.insert(distinct);
+            }
+        }
+    }
+    cout<<"Number of distinct islands is :- "<<st.size()<<endl;
+    
+    cout<<"2 D after manupulation : "<<endl;
+    for(int i = 0; i < m; i++) {
+        for(int j = 0; j < n; j++) {
+            cout<<island[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    
+    
+    
+    return 0;
+}
